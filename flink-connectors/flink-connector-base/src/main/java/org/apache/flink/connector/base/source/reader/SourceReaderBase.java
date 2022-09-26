@@ -127,6 +127,7 @@ public abstract class SourceReaderBase<E, T, SplitT extends SourceSplit, SplitSt
         // make sure we have a fetch we are working on, or move to the next
         RecordsWithSplitIds<E> recordsWithSplitId = this.currentFetch;
         if (recordsWithSplitId == null) {
+            // 如果currentFetch为空 ？ 那就是刚启动的时候
             recordsWithSplitId = getNextFetch(output);
             if (recordsWithSplitId == null) {
                 return trace(finishedOrAvailableLater());
@@ -148,6 +149,7 @@ public abstract class SourceReaderBase<E, T, SplitT extends SourceSplit, SplitSt
                 // this out and return the correct status.
                 // That means we emit the occasional 'false positive' for availability, but this
                 // saves us doing checks for every record. Ultimately, this is cheaper.
+                // 理念很好，不用每次checks状态，提高性能
                 return trace(InputStatus.MORE_AVAILABLE);
             } else if (!moveToNextSplit(recordsWithSplitId, output)) {
                 // The fetch is done and we just discovered that and have not emitted anything, yet.
